@@ -48,6 +48,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <i class="bi bi-journal-text"></i> Laporan
       </a>
     </li>
+
+    <li class="nav-item">
+      <a href="http://localhost/KasirWedanganNusantara/admin/laporan.php"
+         class="nav-link text-white <?= $current_page == 'laporan.php' ? 'active bg-secondary' : ''; ?>">
+        <i class="bi bi-journal-text"></i> grafik
+      </a>
+    </li>
   </ul>
 
   <!--  & Logout di bawah -->

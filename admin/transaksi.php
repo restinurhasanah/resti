@@ -6,10 +6,8 @@ if (!isset($_SESSION['level']) || !in_array($_SESSION['level'], ['admin','kasir'
 }
 include '../koneksi.php';
 
-// Ambil data produk
 $produk = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY nama_produk");
 
-// Proses simpan transaksi
 if (isset($_POST['simpan'])) {
   $id_user = $_SESSION['id_user'];
   $total_harga = (int)$_POST['total_harga'];
@@ -24,18 +22,18 @@ if (isset($_POST['simpan'])) {
   $metode_pembayaran = mysqli_real_escape_string($koneksi, $_POST['metode_pembayaran']);
   $kode_transaksi = 'TRX' . date('YmdHis');
 
-  // Simpan transaksi utama
-  mysqli_query($koneksi, "INSERT INTO transaksi (kode_transaksi, tgl_transaksi, id_user, total_harga, bayar, kembalian, metode_pembayaran)
-                          VALUES ('$kode_transaksi', NOW(), '$id_user', '$total_harga', '$bayar', '$kembalian', '$metode_pembayaran')");
+  mysqli_query($koneksi, "INSERT INTO transaksi 
+    (kode_transaksi, tgl_transaksi, id_user, total_harga, bayar, kembalian, metode_pembayaran)
+    VALUES 
+    ('$kode_transaksi', NOW(), '$id_user', '$total_harga', '$bayar', '$kembalian', '$metode_pembayaran')");
+  
   $id_transaksi = mysqli_insert_id($koneksi);
 
-  // Simpan detail transaksi dan kurangi stok
   foreach ($_POST['produk'] as $i => $id_produk) {
     $qty = (int)$_POST['qty'][$i];
     $harga = (int)$_POST['harga'][$i];
     $subtotal = $qty * $harga;
 
-    // Cek stok
     $cek = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT stok FROM produk WHERE id_produk='$id_produk'"));
     if ($cek['stok'] < $qty) {
       echo "<script>alert('Stok produk tidak mencukupi!'); window.history.back();</script>";
@@ -59,52 +57,85 @@ if (isset($_POST['simpan'])) {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>🧾 Transaksi Kasir</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <style>
 body {
-  background-color: #f8f9fa;
+  background-color: #f1f3f5;
   font-family: 'Poppins', sans-serif;
 }
+
+/* CONTENT */
 .content {
   margin-left: 260px;
   padding: 25px;
 }
+
+/* CARD */
 .card {
   border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+  transition: .2s;
 }
+.card:hover {
+  transform: translateY(-3px);
+}
+
+/* TABEL */
+.table thead {
+  background-color: #e9ecef;
+}
+
 .scroll-area {
   max-height: 300px;
   overflow-y: auto;
 }
-.table thead {
-  background-color: #e9ecef;
-}
-.input-rp {
-  position: relative;
-}
+
+/* INPUT RP */
+.input-rp { position: relative; }
 .input-rp span {
   position: absolute;
   left: 10px;
   top: 8px;
   color: #6c757d;
 }
-.input-rp input {
-  padding-left: 35px;
+.input-rp input { padding-left: 35px; }
+
+/* ===========================
+   FOOTER MODEL DASHBOARD  
+   =========================== */
+.footer {
+  width: calc(100% - 260px);
+  margin-left: 260px;
+  background: #262626;          /* SAME LIKE DASHBOARD */
+  color: white;
+  text-align: center;
+  padding: 18px 0;
+  border-top: 2px solid #333;
+  font-weight: 600;
+  position: fixed;
+  bottom: 0;
+  z-index: 99;
 }
 </style>
+
 </head>
 <body>
+
 <?php include 'sidebar.php'; ?>
 
 <div class="content">
-  <h4 class="mb-4 fw-bold text-secondary"> Transaksi Penjualan</h4>
+  <h4 class="mb-4 fw-bold text-secondary">
+    🧾 Transaksi Penjualan
+  </h4>
 
   <div class="row g-4">
-    <!-- KIRI: Daftar Produk -->
+
+    <!-- KIRI: PRODUK -->
     <div class="col-md-7">
       <div class="card">
         <div class="card-body">
-          <h6 class="fw-bold mb-3 text-secondary"> Daftar Produk</h6>
+          <h6 class="fw-bold mb-3 text-secondary">📦 Daftar Produk</h6>
+
           <table class="table table-bordered table-hover align-middle text-center">
             <thead>
               <tr>
@@ -133,16 +164,19 @@ body {
               <?php endwhile; ?>
             </tbody>
           </table>
+
         </div>
       </div>
     </div>
 
-    <!-- KANAN: Keranjang -->
+    <!-- KANAN: KERANJANG -->
     <div class="col-md-5">
       <form method="post" onsubmit="return cekPembayaran();">
+
         <div class="card">
           <div class="card-body">
-            <h6 class="fw-bold text-center text-secondary mb-3"> Keranjang Belanja</h6>
+            <h6 class="fw-bold text-center text-secondary mb-3">🛒 Keranjang Belanja</h6>
+
             <div class="scroll-area">
               <table class="table table-sm text-center" id="tabelCart">
                 <thead>
@@ -152,12 +186,9 @@ body {
               </table>
             </div>
 
-           <div class="mt-3">
-              <label class="form-label">Metode pembayaran</label>
-              <div class="">
-                <input type="text" id="metode_pembayaran" name="metode_pembayaran" class="form-control" required>
-              </div>
-
+            <div class="mt-3">
+              <label class="form-label">Metode Pembayaran</label>
+              <input type="text" id="metode_pembayaran" name="metode_pembayaran" class="form-control" required>
             </div>
 
             <div class="mt-3">
@@ -189,14 +220,22 @@ body {
 
             <div class="text-center mt-4">
               <button type="submit" name="simpan" class="btn btn-secondary px-4 py-2">
-                 Simpan Transaksi
+                ✔ Simpan Transaksi
               </button>
             </div>
+
           </div>
         </div>
+
       </form>
     </div>
+
   </div>
+</div>
+
+<!-- FOOTER DASHBOARD -->
+<div class="footer">
+  © <?= date('Y') ?> <strong>Kasir Wedangan Nusantara</strong> — Dashboard Admin
 </div>
 
 <script>
@@ -287,7 +326,6 @@ function hitungTotal(){
   kembalianDisplay.value = (kembalian >= 0 ? kembalian.toLocaleString('id-ID') : '0');
 }
 
-// Format input bayar jadi Rp otomatis
 bayarDisplay.addEventListener('input', ()=>{
   let val = bayarDisplay.value.replace(/[^\d]/g,'');
   bayarInput.value = val;
@@ -305,5 +343,6 @@ function cekPembayaran(){
   return true;
 }
 </script>
+
 </body>
 </html>
