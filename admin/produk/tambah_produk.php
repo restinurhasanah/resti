@@ -68,7 +68,7 @@ if (isset($_POST['simpan'])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body class="bg-light" style="background: linear-gradient(to bottom, #252525ff, #464646ff) !important; height:100vh;">
   <?php include '../sidebar.php'; ?>
   <div class="content" style="margin-left:260px;padding:20px">
     <h4>Tambah Produk</h4>

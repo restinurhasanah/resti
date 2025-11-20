@@ -67,7 +67,7 @@ html, body {
 body {
   display: flex;
   flex-direction: column;
-  background: #d0d0d0;
+  background: linear-gradient(to bottom, #252525ff, #464646ff) !important;
   margin: 0;
   padding: 0;
   font-family: "Poppins", sans-serif;
@@ -82,7 +82,7 @@ body {
 /* Header */
 h4 {
   font-weight: 700;
-  color: #222;
+  color: #ffffffff;
 }
 
 /* Tombol tambah */
@@ -151,7 +151,7 @@ h4 {
 }
 
 /* Tombol edit & hapus */
-.btn-edit,
+
 .btn-hapus {
   padding: 6px 12px;
   border-radius: 8px;
@@ -161,10 +161,18 @@ h4 {
   color: #fff;
 }
 
-.btn-edit { background: #ffb02e; }
-.btn-edit:hover { background: #e28c00; }
-.btn-hapus { background: #d9534f; }
-.btn-hapus:hover { background: #b52a22; }
+.btn-edit {
+   background: #ffb02e; 
+  }
+.btn-edit:hover {
+   background: #e28c00;
+  }
+.btn-hapus { 
+  background: #d9534f; 
+}
+.btn-hapus:hover {
+   background: #b52a22; 
+  }
 
 /* Grid */
 #produkContainer {
@@ -197,8 +205,8 @@ h4 {
 <body>
 
 <div class="content">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4>Manajemen Produk</h4>
+  <div class="d-flex justify-content-between mb-4 ">
+    <h4 style="text-align:center;" >Manajemen Produk</h4>
     <a href="tambah_produk.php" class="btn btn-success">+ Tambah Produk</a>
   </div>
 

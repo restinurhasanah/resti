@@ -60,7 +60,8 @@ if (isset($_POST['simpan'])) {
 
 <style>
 body {
-  background-color: #f1f3f5;
+  height:100vh;
+  background: linear-gradient(to bottom, #252525ff, #464646ff);
   font-family: 'Poppins', sans-serif;
 }
 
@@ -123,8 +124,8 @@ body {
 
 <?php include 'sidebar.php'; ?>
 
-<div class="content">
-  <h4 class="mb-4 fw-bold text-secondary">
+<div class="content ">
+  <h4 class="mb-4 fw-bold text-secondary fw-semibold text-light" style="text-align:center;">
     🧾 Transaksi Penjualan
   </h4>
 

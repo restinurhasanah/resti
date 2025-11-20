@@ -60,19 +60,22 @@ if (isset($_GET['ajax'])) {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-
-/* Footer tetap di bawah */
+/* === BACKGROUND DARK MODE === */
 html, body {
   height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   display: flex;
   flex-direction: column;
-  background:#1f1f1f;      /* 🔥 Background gelap elegan */
-  color:white;
+  background: linear-gradient(to bottom, #252525ff, #464646ff) !important;
+  background-attachment: fixed;
+  color: white;
 }
 
+/* CONTENT AREA */
 .content {
   flex: 1;
   margin-left:260px;
@@ -82,9 +85,9 @@ body {
   align-items:center;
 }
 
-/* Jam Operasional – warna digelapkan */
+/* Jam Operasional */
 #jamBukaBox {
-  background:#2a2a2a;       /* 🔥 Dark grey */
+  background:#2a2a2a;
   color:#fff;
   padding:20px;
   border-radius:14px;
@@ -92,7 +95,7 @@ body {
   max-width:600px;
   text-align:center;
   margin-bottom:20px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.5);
+  box-shadow:0 3px 10px rgba(0,0,0,0.6);
 }
 
 #jamDigital { 
@@ -101,55 +104,61 @@ body {
   margin-top:5px; 
 }
 
-/* FILTER – warna gelap */
+/* FILTER */
 .filter-menu {
-  background:#303030;        /* 🔥 Dark grey */
+  background:#2a2a2a;
   padding:10px 15px;
   border-radius:12px;
   display:flex;
   gap:20px;
   margin-bottom:20px;
   color:white;
-  box-shadow:0 2px 6px rgba(0,0,0,0.5);
+  box-shadow:0 2px 6px rgba(0,0,0,0.6);
 }
 
-/* SEARCH – warna dark juga */
 .search-bar {
   max-width:350px;
   width:100%;
   position:relative;
   margin-bottom:20px;
 }
+
 .search-bar input {
-  background:#2e2e2e;        /* 🔥 dark */
+  background:white;
   border:none;
   color:white;
+  padding-right:35px;           /* ruang untuk X */
 }
+
 .search-bar input::placeholder {
   color:#bbb;
 }
 
 #clearSearch {
   position:absolute;
-  right:10px;
-  top:6px;
+  right:12px;                    /* 🔥 nempel kanan */
+  top:50%;                       /* 🔥 di tengah */
+  transform:translateY(-50%); 
   background:transparent;
   border:none;
   font-size:18px;
   color:white;
+  cursor:pointer;
   display:none;
 }
 
-/* CARD PRODUK – tetap putih untuk kontras */
+
+/* CARD PRODUK */
 .card-produk {
   width:180px;
   border:none;
   border-radius:12px;
-  background:#fff;
+  background:#ffffff;
   overflow:hidden;
   box-shadow:0 2px 7px rgba(255,255,255,0.1);
   transition:.2s;
 }
+
 .card-produk:hover { transform:scale(1.05); }
 
 .card-produk img {
@@ -158,11 +167,7 @@ body {
   object-fit:cover;
 }
 
-.card-body { padding:10px; text-align:center; color:#000; }
-.harga { font-weight:bold; margin-top:5px; }
-.stok { font-size:13px; color:#444; }
-
-/* GRID PRODUK */
+/* GRID */
 #produkContainer {
   display:flex;
   flex-wrap:wrap;
@@ -171,16 +176,23 @@ body {
   width:100%;
 }
 
-/* FOOTER – digelapkan */
 footer {
-  margin-left:260px;
+
   padding:18px;
   text-align:center;
-  background:#262626;       /* 🔥 Dark grey */
+  background:#1f1f1f;
   border-top:2px solid #333;
   font-weight:600;
   color:white;
+  position: fixed;     /* 🔥 baru */
+  bottom: 0;           /* 🔥 biar nempel bawah */
+  left: 260px;         /* 🔥 biar sejajar sidebar */
+  width: calc(100% - 260px); /* 🔥 biar melebar tapi tidak nutup sidebar */
+  z-index: 100;
 }
+
+
+</style>
 
 </style>
 </head>

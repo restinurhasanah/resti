@@ -91,7 +91,7 @@ if (isset($_POST['simpan'])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-    body { background: #f8f9fa; }
+    body {background: linear-gradient(to bottom, #252525ff, #464646ff) !important; }
     .content { margin-left: 260px; padding: 20px; }
     .card { border: none; border-radius: 10px; }
     .preview-img {
@@ -110,7 +110,7 @@ if (isset($_POST['simpan'])) {
   <?php include '../sidebar.php'; ?>
 
   <div class="content">
-    <h4 class="mb-3"> Edit Produk</h4>
+    <h4 class="mb-3"  style="text-align:center" > Edit Produk</h4>
 
     <div class="card p-4 shadow-sm">
       <?php if (!empty($pesanError)): ?>

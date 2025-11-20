@@ -8,14 +8,13 @@ if (!isset($_SESSION['level']) || $_SESSION['level'] != 'admin') {
 include '../koneksi.php';
 include 'sidebar.php';
 
-// ===== Ambil daftar kasir/admin dari tabel user =====
+// ===== Ambil daftar kasir/admin =====
 $kasirQuery = mysqli_query($koneksi, "SELECT id_user, username FROM user ORDER BY username");
 
-// ===== Ambil filter GET =====
+// ===== Filter GET =====
 $from = $_GET['from'] ?? '';
 $to   = $_GET['to'] ?? '';
 $kasir = $_GET['kasir'] ?? '';
-$bulan = $_GET['bulan'] ?? '';
 $tahunSekarang = 2025;
 
 // ===== Query TOTAL =====
@@ -27,7 +26,6 @@ $sqlTotal = "SELECT
               WHERE 1";
 
 if ($from && $to)      $sqlTotal .= " AND DATE(tgl_transaksi) BETWEEN '$from' AND '$to'";
-if ($bulan)            $sqlTotal .= " AND MONTH(tgl_transaksi) = '$bulan'";
 if ($kasir)            $sqlTotal .= " AND t.id_user = '$kasir'";
 
 $dataTotal = mysqli_fetch_assoc(mysqli_query($koneksi, $sqlTotal));
@@ -39,7 +37,6 @@ $sql = "SELECT t.*, u.username
         WHERE 1";
 
 if ($from && $to)  $sql .= " AND DATE(t.tgl_transaksi) BETWEEN '$from' AND '$to'";
-if ($bulan)        $sql .= " AND MONTH(t.tgl_transaksi) = '$bulan'";
 if ($kasir)        $sql .= " AND t.id_user = '$kasir'";
 
 $sql .= " ORDER BY t.tgl_transaksi DESC";
@@ -56,16 +53,21 @@ $res = mysqli_query($koneksi, $sql);
 
 <style>
 body {
-  background-color: #f2f3f5;
+  background: linear-gradient(to bottom, #252525ff, #464646ff);
   font-family: 'Poppins', sans-serif;
 }
-.table thead { background-color: #dee2e6; }
-h4 { color: #555; }
 
-/* FOOTER SAMA SEPERTI DASHBOARD */
+/* ==== CONTAINER LEBAR FULL ==== */
+.main-wrapper {
+    margin-left:260px;
+    padding:20px;
+    padding-bottom:80px;
+    width: calc(100% - 260px);
+}
+
+/* ===== FOOTER ===== */
 .footer-dashboard {
     width: calc(100% - 260px);
-    margin-left: 260px;
     background-color: #262626;
     color: white;
     text-align: center;
@@ -89,97 +91,94 @@ h4 { color: #555; }
     background: white !important;
   }
 }
+
+/* ================= SEARCH BAR ================= */
+.search-wrapper {
+    position: relative;
+    width: 280px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 35px 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+    background: white;
+    color: black;
+}
+
+.search-input:focus {
+    border-color: #888;
+}
+
+.clear-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #444;
+    cursor: pointer;
+    display: none;
+    user-select: none;
+}
 </style>
 </head>
 <body>
 
-<div style="margin-left:260px; padding:20px; padding-bottom:80px;">
+<div class="main-wrapper">
 
-  <h4 class="mb-4 fw-bold text-secondary text-center">📄 LAPORAN TRANSAKSI</h4>
+  <h4 class="mb-4 fw-bold text-secondary text-center text-light">📄 LAPORAN TRANSAKSI</h4>
 
-  <!-- ======================= FILTER BARU ======================= -->
+  <!-- ============= FILTER BAR ============= -->
   <form class="no-print mb-4" method="GET">
       <div class="d-flex justify-content-center">
-          <div class="row g-3" style="max-width: 900px;">
+          <div class="row g-3 align-items-end w-100">
 
-              <!-- Periode Tanggal -->
-              <div class="col-md-6">
+              <div class="col-md-4">
                   <label class="form-label fw-semibold">Dari Tanggal</label>
-                  <input type="date" name="from" class="form-control" 
-                         value="<?= $from ?>" onchange="this.form.submit()">
+                  <input type="date" name="from" class="form-control" value="<?= $from ?>">
               </div>
 
-              <div class="col-md-6">
+              <div class="col-md-4">
                   <label class="form-label fw-semibold">Sampai Tanggal</label>
-                  <input type="date" name="to" class="form-control" 
-                         value="<?= $to ?>" onchange="this.form.submit()">
+                  <input type="date" name="to" class="form-control" value="<?= $to ?>">
               </div>
 
-              <!-- Periode Bulan -->
-              <div class="col-md-12">
-                  <label class="form-label fw-semibold">Periode Bulan</label>
-                  <select name="bulan" class="form-control" onchange="this.form.submit()">
-                      <option value="">-- Semua Bulan --</option>
-                      <?php for($i=1;$i<=12;$i++): ?>
-                          <option value="<?= $i ?>" <?= ($bulan==$i?'selected':'') ?>>
-                              <?= date('F', mktime(0,0,0,$i,10)) ?> 2025
-                          </option>
-                      <?php endfor; ?>
-                  </select>
-              </div>
-
-              <!-- Filter Kasir -->
-              <div class="col-md-12">
-                  <label class="form-label fw-semibold">Filter Berdasarkan Kasir:</label><br>
-
-                  <div class="d-flex flex-wrap gap-3">
-                      <label>
-                          <input type="radio" name="kasir" value=""
-                            <?= ($kasir==''?'checked':'') ?> onchange="this.form.submit()">
-                          <strong>Semua Kasir</strong>
-                      </label>
-
-                      <?php while($k = mysqli_fetch_assoc($kasirQuery)): ?>
-                          <label>
-                              <input type="radio" name="kasir" 
-                                value="<?= $k['id_user'] ?>"
-                                <?= ($kasir==$k['id_user']?'checked':'') ?> 
-                                onchange="this.form.submit()">
-                              <?= htmlspecialchars($k['username']) ?>
-                          </label>
-                      <?php endwhile; ?>
-                  </div>
-              </div>
-
-              <!-- Tombol Cetak -->
-              <div class="col-md-4 mx-auto">
+              <div class="col-md-4 text-end">
                   <button type="button" class="btn btn-success w-100" onclick="printLaporan()">
                       🖨 Cetak Laporan
                   </button>
               </div>
 
-          </div>
-      </div>
   </form>
-  <!-- ======================= END FILTER ======================= -->
+  <!-- ============= END FILTER ============= -->
 
 
-  <!-- ================== AREA CETAK ================== -->
+  <!-- ================== CETAK AREA ================== -->
   <div id="print-area" class="bg-white p-4 rounded shadow-sm">
 
-    <div class="text-center mb-4 border-bottom pb-3">
+    <div class="text-center mb-4 border-bottom pb-2">
       <h4 class="fw-bold mb-0">LAPORAN TRANSAKSI</h4>
       <p class="text-muted mb-0">KASIR WEDANGAN NUSANTARA</p>
 
       <small class="text-secondary">
         <?php if ($from && $to): ?>
           Periode: <?= date('d/m/Y', strtotime($from)) ?> - <?= date('d/m/Y', strtotime($to)) ?>
-        <?php elseif($bulan): ?>
-          Periode: Bulan <?= date('F', mktime(0,0,0,$bulan,1)) ?> <?= $tahunSekarang ?>
         <?php else: ?>
           Periode: Tahun <?= $tahunSekarang ?>
         <?php endif; ?>
       </small>
+    </div>
+
+    <!-- 🔍 SEARCH BAR -->
+    <div class="no-print mb-3 d-flex justify-content-end">
+        <div class="search-wrapper">
+            <input type="text" id="search" class="search-input" placeholder="Cari transaksi...">
+            <span class="clear-btn" id="clearBtn">&times;</span>
+        </div>
     </div>
 
     <!-- Ringkasan -->
@@ -192,7 +191,7 @@ h4 { color: #555; }
     </div>
 
     <!-- TABEL -->
-    <table class="table table-bordered table-striped mt-3">
+    <table class="table table-bordered table-striped mt-3 w-100" id="transaksiTable">
       <thead class="table-secondary text-center">
         <tr>
           <th>No</th>
@@ -218,7 +217,7 @@ h4 { color: #555; }
           <td>Rp <?= number_format($r['kembalian'],0,',','.') ?></td>
           <td><?= $r['metode_pembayaran'] ?></td>
           <td class="no-print text-center">
-            <a href="cetak_struk.php?id=<?= $r['id_transaksi'] ?>" class="btn btn-outline-primary btn-sm">Lihat Struk</a>
+            <a href="cetak_struk.php?id=<?= $r['id_transaksi'] ?>" class="btn btn-outline-primary btn-sm">Struk</a>
           </td>
         </tr>
         <?php endwhile; ?>
@@ -228,7 +227,7 @@ h4 { color: #555; }
   </div>
 </div>
 
-<!-- FOOTER DASHBOARD -->
+<!-- FOOTER -->
 <div class="footer-dashboard">
   © <?= date('Y') ?> Kasir Wedangan Nusantara — All Rights Reserved.
 </div>
@@ -237,6 +236,35 @@ h4 { color: #555; }
 function printLaporan() {
   window.print();
 }
+
+// ========== SEARCH BAR FUNCTION ==========
+const input = document.getElementById("search");
+const clearBtn = document.getElementById("clearBtn");
+const table = document.getElementById("transaksiTable").getElementsByTagName("tbody")[0];
+
+input.addEventListener("input", function () {
+    clearBtn.style.display = input.value.length > 0 ? "block" : "none";
+
+    let filter = input.value.toLowerCase();
+    let rows = table.getElementsByTagName("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+        let text = rows[i].innerText.toLowerCase();
+        rows[i].style.display = text.includes(filter) ? "" : "none";
+    }
+});
+
+clearBtn.addEventListener("click", function () {
+    input.value = "";
+    clearBtn.style.display = "none";
+
+    let rows = table.getElementsByTagName("tr");
+    for (let i = 0; i < rows.length; i++) {
+        rows[i].style.display = "";
+    }
+
+    input.focus();
+});
 </script>
 
 </body>
