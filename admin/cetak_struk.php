@@ -9,8 +9,8 @@ if(!$id_transaksi){
   exit;
 }
 
-// Ambil data transaksi + kasir
-$q = "SELECT t.*, u.username AS kasir 
+// Ambil data transaksi + kasir + nama pelanggan
+$q = "SELECT t.*, u.username AS kasir, t.nama_pelanggan
       FROM transaksi t 
       JOIN user u ON t.id_user = u.id_user 
       WHERE t.id_transaksi = $id_transaksi";
@@ -142,7 +142,7 @@ button:hover{
     <strong>No. Transaksi:</strong> <?= htmlspecialchars($trx['kode_transaksi']) ?><br>
     <strong>Tanggal:</strong> <?= date('d-m-Y H:i', strtotime($trx['tgl_transaksi'])) ?><br>
     <strong>Kasir:</strong> <?= htmlspecialchars($trx['kasir']) ?><br>
-  
+    <strong>Nama Pelanggan:</strong> <?= htmlspecialchars($trx['nama_pelanggan']) ?> <!-- Menampilkan Nama Pelanggan -->
   </p>
   <hr>
   <table>

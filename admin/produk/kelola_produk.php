@@ -60,17 +60,17 @@ if (isset($_GET['ajax'])) {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-/* === Layout supaya footer di bawah === */
-html, body {
-  height: 100%;
-}
+html, 
+
+
 body {
+    height:100vh;
   display: flex;
   flex-direction: column;
   background: linear-gradient(to bottom, #252525ff, #464646ff) !important;
-  margin: 0;
-  padding: 0;
-  font-family: "Poppins", sans-serif;
+  background-attachment: fixed;
+  color: white;
+    margin-bottom:30px;
 }
 
 .content {
@@ -79,28 +79,15 @@ body {
   flex: 1; 
 }
 
-/* Header */
-h4 {
-  font-weight: 700;
-  color: #ffffffff;
-}
+h4 { font-weight: 700; color: #fff; }
 
-/* Tombol tambah */
 .btn-success {
   border-radius: 10px;
   font-weight: 600;
 }
 
-/* Search bar */
-.search-bar {
-  max-width: 350px;
-  position: relative;
-  margin-bottom: 20px;
-}
-#searchInput {
-  padding-right: 35px;
-  border-radius: 10px;
-}
+.search-bar { max-width: 350px; position: relative; margin-bottom: 20px; }
+#searchInput { padding-right: 35px; border-radius: 10px; }
 #clearSearch {
   position: absolute;
   right: 10px;
@@ -112,15 +99,17 @@ h4 {
   display: none;
 }
 
-/* CARD */
+/* === CARD PRODUK === */
 .card-produk {
-  width: 220px;
+  width: 210px;
   border: none;
   border-radius: 14px;
   background: #f5f5f5;
   overflow: hidden;
   box-shadow: 0px 3px 12px rgba(0,0,0,0.18);
   transition: .25s ease-in-out;
+  margin-left: auto;
+  margin-right: auto;
 }
 .card-produk:hover {
   transform: translateY(-6px);
@@ -134,52 +123,30 @@ h4 {
   background: #eee;
 }
 
-/* teks produk */
-.card-title { 
-  font-weight: 700; 
-  color: #222;
-}
-.harga2 {
-  font-size: 17px;
-  color: #000;
-  font-weight: bold;
-  margin-top: 8px;
-}
-.stok2 {
-  font-size: 13px;
-  color: #444;
-}
+.card-title { font-weight: 700; color: #222; }
+.harga2 { font-size: 17px; font-weight: bold; margin-top: 8px; }
+.stok2 { font-size: 13px; color: #444; }
 
-/* Tombol edit & hapus */
-
-.btn-hapus {
-  padding: 6px 12px;
+/* Tombol Edit & Hapus */
+.btn-edit, .btn-hapus {
+  padding: 6px 10px;
   border-radius: 8px;
+  color: white;
   text-decoration: none;
-  font-size: 13px;
   font-weight: 600;
-  color: #fff;
 }
+.btn-edit { background: #ffb02e; }
+.btn-edit:hover { background: #e28c00; }
 
-.btn-edit {
-   background: #ffb02e; 
-  }
-.btn-edit:hover {
-   background: #e28c00;
-  }
-.btn-hapus { 
-  background: #d9534f; 
-}
-.btn-hapus:hover {
-   background: #b52a22; 
-  }
+.btn-hapus { background: #d9534f; }
+.btn-hapus:hover { background: #b52a22; }
 
-/* Grid */
+/* GRID PRODUK */
 #produkContainer {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
-  justify-content: flex-start;
+  justify-content: center !important;
 }
 
 .produk-item {
@@ -188,16 +155,18 @@ h4 {
   justify-content: center;
 }
 
-/* === FOOTER DASHBOARD === */
 .footer-dashboard {
-    width: calc(100% - 260px);
-    margin-left: 260px;
-    background: #262626;
-    color: white;
-    text-align: center;
-    padding: 15px 0;
-    border-top: 1px solid #444;
-    font-size: 14px;
+  width: calc(100% - 260px);
+  margin-left: 260px;
+  background: #262626;
+  color: white;
+  text-align: center;
+  padding: 5px 0;
+  border-top: 2px solid #333;
+  font-weight: 600;
+  position: fixed;
+  bottom: 0;
+  z-index: 99;
 }
 </style>
 </head>
@@ -206,11 +175,10 @@ h4 {
 
 <div class="content">
   <div class="d-flex justify-content-between mb-4 ">
-    <h4 style="text-align:center;" >Manajemen Produk</h4>
+    <h4 style="text-align:center;">Manajemen Produk</h4>
     <a href="tambah_produk.php" class="btn btn-success">+ Tambah Produk</a>
   </div>
 
-  <!-- Search -->
   <div class="search-bar">
     <input type="text" id="searchInput" class="form-control" placeholder="Cari nama produk...">
     <button id="clearSearch">×</button>
@@ -221,9 +189,7 @@ h4 {
     $q = mysqli_query($koneksi, "SELECT * FROM produk WHERE is_deleted = 0 ORDER BY id_produk DESC");
     while ($p = mysqli_fetch_assoc($q)):
       $path_file = '../uploads/' . $p['foto'];
-      $foto = (!empty($p['foto']) && file_exists($path_file))
-        ? $path_file
-        : 'https://via.placeholder.com/300x160?text=No+Image';
+      $foto = (!empty($p['foto']) && file_exists($path_file)) ? $path_file : 'https://via.placeholder.com/300x160?text=No+Image';
     ?>
       <div class="produk-item">
         <div class="card card-produk">
@@ -245,9 +211,8 @@ h4 {
   </div>
 </div>
 
-<!-- === FOOTER DASHBOARD === -->
 <footer class="footer-dashboard">
-  <p>© 2025 <strong>Kasir Wedangan Nusantara</strong> — Dashboard Admin</p>
+  <p>© 2025 <strong>Kasir Wedangan Nusantara</strong></p>
 </footer>
 
 <script>

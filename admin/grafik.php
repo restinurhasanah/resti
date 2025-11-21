@@ -210,7 +210,7 @@ body {
 </div>
 
 <div class="footer-dashboard">
-  © <?= date('Y') ?> Kasir Wedangan Nusantara — All Rights Reserved.
+  © <?= date('Y') ?> Kasir Wedangan Nusantara
 </div>
 
 <script>

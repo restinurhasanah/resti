@@ -12,6 +12,7 @@ if (isset($_POST['simpan'])) {
   $id_user = $_SESSION['id_user'];
   $total_harga = (int)$_POST['total_harga'];
   $bayar = (int)$_POST['bayar'];
+  $nama_pelanggan = mysqli_real_escape_string($koneksi, $_POST['nama_pelanggan']); // Menangkap nama pelanggan
 
   if ($bayar < $total_harga) {
     echo "<script>alert('Uang tidak cukup! Transaksi dibatalkan.'); window.history.back();</script>";
@@ -22,10 +23,11 @@ if (isset($_POST['simpan'])) {
   $metode_pembayaran = mysqli_real_escape_string($koneksi, $_POST['metode_pembayaran']);
   $kode_transaksi = 'TRX' . date('YmdHis');
 
+  // Menyimpan transaksi termasuk nama pelanggan
   mysqli_query($koneksi, "INSERT INTO transaksi 
-    (kode_transaksi, tgl_transaksi, id_user, total_harga, bayar, kembalian, metode_pembayaran)
+    (kode_transaksi, tgl_transaksi, id_user, total_harga, bayar, kembalian, metode_pembayaran, nama_pelanggan)
     VALUES 
-    ('$kode_transaksi', NOW(), '$id_user', '$total_harga', '$bayar', '$kembalian', '$metode_pembayaran')");
+    ('$kode_transaksi', NOW(), '$id_user', '$total_harga', '$bayar', '$kembalian', '$metode_pembayaran', '$nama_pelanggan')");
   
   $id_transaksi = mysqli_insert_id($koneksi);
 
@@ -50,6 +52,7 @@ if (isset($_POST['simpan'])) {
   exit;
 }
 ?>
+
 <!doctype html>
 <html lang="id">
 <head>
@@ -101,13 +104,10 @@ body {
 }
 .input-rp input { padding-left: 35px; }
 
-/* ===========================
-   FOOTER MODEL DASHBOARD  
-   =========================== */
 .footer {
   width: calc(100% - 260px);
   margin-left: 260px;
-  background: #262626;          /* SAME LIKE DASHBOARD */
+  background: #262626;
   color: white;
   text-align: center;
   padding: 18px 0;
@@ -124,7 +124,7 @@ body {
 
 <?php include 'sidebar.php'; ?>
 
-<div class="content ">
+<div class="content">
   <h4 class="mb-4 fw-bold text-secondary fw-semibold text-light" style="text-align:center;">
     🧾 Transaksi Penjualan
   </h4>
@@ -187,6 +187,12 @@ body {
               </table>
             </div>
 
+            <!-- Input Nama Pelanggan -->
+            <div class="mt-3">
+              <label class="form-label">Nama Pelanggan</label>
+              <input type="text" name="nama_pelanggan" class="form-control" required>
+            </div>
+
             <div class="mt-3">
               <label class="form-label">Metode Pembayaran</label>
               <input type="text" id="metode_pembayaran" name="metode_pembayaran" class="form-control" required>
@@ -236,9 +242,10 @@ body {
 
 <!-- FOOTER DASHBOARD -->
 <div class="footer">
-  © <?= date('Y') ?> <strong>Kasir Wedangan Nusantara</strong> — Dashboard Admin
+  © <?= date('Y') ?> <strong>Kasir Wedangan</strong>
 </div>
 
+<!-- JavaScript -->
 <script>
 const cartBody = document.querySelector('#tabelCart tbody');
 const totalInput = document.getElementById('total_harga');
@@ -248,25 +255,25 @@ const bayarInput = document.getElementById('bayar');
 const kembalianDisplay = document.getElementById('kembalian_display');
 const kembalianInput = document.getElementById('kembalian');
 
-document.querySelectorAll('.tambahKeranjang').forEach(btn=>{
-  btn.addEventListener('click',()=>{
+document.querySelectorAll('.tambahKeranjang').forEach(btn => {
+  btn.addEventListener('click', () => {
     const id = btn.dataset.id;
     const nama = btn.dataset.nama;
     const harga = parseInt(btn.dataset.harga);
     const stok = parseInt(btn.dataset.stok);
 
     let row = cartBody.querySelector(`tr[data-id="${id}"]`);
-    if(row){
+    if (row) {
       let qtyInput = row.querySelector('.qty');
       let newQty = parseInt(qtyInput.value) + 1;
-      if(newQty > stok){
+      if (newQty > stok) {
         alert(`Stok produk ${nama} hanya ${stok}`);
         return;
       }
       qtyInput.value = newQty;
       updateSubtotal(row);
     } else {
-      if(stok <= 0){
+      if (stok <= 0) {
         alert(`Stok produk ${nama} habis!`);
         return;
       }
@@ -285,11 +292,11 @@ document.querySelectorAll('.tambahKeranjang').forEach(btn=>{
   });
 });
 
-cartBody.addEventListener('input', e=>{
-  if(e.target.classList.contains('qty')){
+cartBody.addEventListener('input', e => {
+  if (e.target.classList.contains('qty')) {
     const row = e.target.closest('tr');
     const stok = parseInt(row.dataset.stok);
-    if(parseInt(e.target.value) > stok){
+    if (parseInt(e.target.value) > stok) {
       alert(`Jumlah melebihi stok (${stok})`);
       e.target.value = stok;
     }
@@ -297,14 +304,14 @@ cartBody.addEventListener('input', e=>{
   }
 });
 
-cartBody.addEventListener('click', e=>{
-  if(e.target.classList.contains('hapus')){
+cartBody.addEventListener('click', e => {
+  if (e.target.classList.contains('hapus')) {
     e.target.closest('tr').remove();
     hitungTotal();
   }
 });
 
-function updateSubtotal(row){
+function updateSubtotal(row) {
   const harga = parseInt(row.querySelector('input[name="harga[]"]').value);
   const qty = parseInt(row.querySelector('.qty').value);
   const subtotal = harga * qty;
@@ -312,10 +319,10 @@ function updateSubtotal(row){
   hitungTotal();
 }
 
-function hitungTotal(){
+function hitungTotal() {
   let total = 0;
-  document.querySelectorAll('.subtotal').forEach(s=>{
-    let val = s.value.replace(/[^\d]/g,'');
+  document.querySelectorAll('.subtotal').forEach(s => {
+    let val = s.value.replace(/[^\d]/g, '');
     total += parseInt(val || 0);
   });
   totalInput.value = total;
@@ -327,23 +334,22 @@ function hitungTotal(){
   kembalianDisplay.value = (kembalian >= 0 ? kembalian.toLocaleString('id-ID') : '0');
 }
 
-bayarDisplay.addEventListener('input', ()=>{
-  let val = bayarDisplay.value.replace(/[^\d]/g,'');
+bayarDisplay.addEventListener('input', () => {
+  let val = bayarDisplay.value.replace(/[^\d]/g, '');
   bayarInput.value = val;
   bayarDisplay.value = parseInt(val || 0).toLocaleString('id-ID');
   hitungTotal();
 });
 
-function cekPembayaran(){
+function cekPembayaran() {
   const total = parseInt(totalInput.value);
   const bayar = parseInt(bayarInput.value);
-  if(bayar < total){
+  if (bayar < total) {
     alert('Uang tidak cukup untuk menyelesaikan transaksi!');
     return false;
   }
   return true;
 }
 </script>
-
 </body>
 </html>

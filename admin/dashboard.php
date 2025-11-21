@@ -60,19 +60,15 @@ if (isset($_GET['ajax'])) {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-/* === BACKGROUND DARK MODE === */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
 
 body {
+    height:100vh;
   display: flex;
   flex-direction: column;
   background: linear-gradient(to bottom, #252525ff, #464646ff) !important;
   background-attachment: fixed;
   color: white;
+    margin-bottom:30px;
 }
 
 /* CONTENT AREA */
@@ -245,7 +241,7 @@ footer {
 </div>
 
 <footer>
-  © 2025 <strong>Kasir Wedangan Nusantara</strong> — Dashboard Admin
+  © 2025 <strong>Kasir Wedangan Nusantara</strong>
 </footer>
 
 <script>

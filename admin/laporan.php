@@ -67,20 +67,23 @@ body {
 
 /* ===== FOOTER ===== */
 .footer-dashboard {
-    width: calc(100% - 260px);
-    background-color: #262626;
-    color: white;
-    text-align: center;
-    padding: 12px 0;
-    border-top: 1px solid #444;
-    font-size: 14px;
-    position: fixed;
-    bottom: 0;
+ 
+  width: calc(100% - 260px);
+  margin-left: 260px;
+  background: #262626;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  border-top: 2px solid #333;
+  font-weight: 600;
+  position: fixed;
+  bottom: 0;
+  z-index: 99;
 }
 
 @media print {
   .no-print { display: none !important; }
-  .footer-dashboard { display: none; }
+  .footer-dashboard { display: block; position: relative; bottom: unset; }
   body * { visibility: hidden; }
   #print-area, #print-area * { visibility: visible; }
   #print-area {
@@ -133,29 +136,33 @@ body {
   <h4 class="mb-4 fw-bold text-secondary text-center text-light">📄 LAPORAN TRANSAKSI</h4>
 
   <!-- ============= FILTER BAR ============= -->
-  <form class="no-print mb-4" method="GET">
+  <form class="no-print mb-4" method="GET" id="filterForm">
       <div class="d-flex justify-content-center">
           <div class="row g-3 align-items-end w-100">
 
-              <div class="col-md-4">
-                  <label class="form-label fw-semibold">Dari Tanggal</label>
-                  <input type="date" name="from" class="form-control" value="<?= $from ?>">
-              </div>
-
-              <div class="col-md-4">
-                  <label class="form-label fw-semibold">Sampai Tanggal</label>
-                  <input type="date" name="to" class="form-control" value="<?= $to ?>">
-              </div>
-
+              <!-- "Dari Tanggal" di kanan -->
               <div class="col-md-4 text-end">
-                  <button type="button" class="btn btn-success w-100" onclick="printLaporan()">
+                  <label class="form-label fw-semibold">Dari Tanggal</label>
+                  <input type="date" name="from" class="form-control" value="<?= $from ?>" id="fromDate">
+              </div>
+
+              <!-- "Sampai Tanggal" di kiri -->
+              <div class="col-md-4 text-start">
+                  <label class="form-label fw-semibold">Sampai Tanggal</label>
+                  <input type="date" name="to" class="form-control" value="<?= $to ?>" id="toDate">
+              </div>
+
+              <!-- Tombol Cetak Laporan -->
+              <div class="col-md-4 text-end">
+                  <button type="button" class="btn btn-success w-100" onclick="printReport()">
                       🖨 Cetak Laporan
                   </button>
               </div>
 
+          </div>
+      </div>
   </form>
   <!-- ============= END FILTER ============= -->
-
 
   <!-- ================== CETAK AREA ================== -->
   <div id="print-area" class="bg-white p-4 rounded shadow-sm">
@@ -229,15 +236,20 @@ body {
 
 <!-- FOOTER -->
 <div class="footer-dashboard">
-  © <?= date('Y') ?> Kasir Wedangan Nusantara — All Rights Reserved.
+  © <?= date('Y') ?> Kasir Wedangan Nusantara
 </div>
 
 <script>
-function printLaporan() {
-  window.print();
-}
+// ========== AUTO SUBMIT FORM ON DATE CHANGE ========== 
+document.getElementById('fromDate').addEventListener('change', function() {
+    document.getElementById('filterForm').submit();
+});
 
-// ========== SEARCH BAR FUNCTION ==========
+document.getElementById('toDate').addEventListener('change', function() {
+    document.getElementById('filterForm').submit();
+});
+
+// ========== SEARCH BAR FUNCTION ========== 
 const input = document.getElementById("search");
 const clearBtn = document.getElementById("clearBtn");
 const table = document.getElementById("transaksiTable").getElementsByTagName("tbody")[0];
@@ -265,6 +277,11 @@ clearBtn.addEventListener("click", function () {
 
     input.focus();
 });
+
+// Function for Print
+function printReport() {
+    window.print();
+}
 </script>
 
 </body>
