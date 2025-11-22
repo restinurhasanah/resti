@@ -121,7 +121,7 @@ body {
     <form method="GET" class="d-flex gap-2 align-items-center">
       <label class="text-muted mb-0">Tahun</label>
       <select name="tahun" class="form-select form-select-sm" onchange="this.form.submit()">
-        <?php for($y=2023; $y<=2026; $y++): ?>
+        <?php for($y=2025; $y<=2030; $y++): ?>
           <option value="<?= $y ?>" <?= ($y==$tahun?'selected':'') ?>>
             <?= $y ?>
           </option>
