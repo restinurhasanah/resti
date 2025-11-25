@@ -8,7 +8,7 @@ if (!isset($_SESSION['level']) || $_SESSION['level'] != 'admin') {
 include '../../koneksi.php';
 include '../sidebar.php';
 
-// ==== AJAX ====
+
 if (isset($_GET['ajax'])) {
   $search = $_GET['search'] ?? '';
   $where = "is_deleted = 0";
@@ -27,8 +27,9 @@ if (isset($_GET['ajax'])) {
         ? $path_file
         : 'https://via.placeholder.com/300x160?text=No+Image';
 
+      
       echo "
-      <div class='col-6 col-md-4 col-lg-3 produk-item'>
+      <div class='produk-item'>
         <div class='card card-produk h-100'>
           <img src='".htmlspecialchars($foto)."' class='card-img-top'/>
           <div class='card-body text-center'>
@@ -46,8 +47,10 @@ if (isset($_GET['ajax'])) {
       </div>";
     endwhile;
   else:
-    echo "<div class='col-12 text-center text-muted mt-4'><p>⚠️ Belum ada produk ditemukan.</p></div>";
+    
+    echo "<div class='text-center text-muted mt-4' style='width:100%'><p>⚠️ Belum ada produk ditemukan.</p></div>";
   endif;
+
   exit;
 }
 ?>
@@ -60,16 +63,13 @@ if (isset($_GET['ajax'])) {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-html, 
-
-
 body {
     height:100vh;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(to bottom, #252525ff, #464646ff) !important;
-  background-attachment: fixed;
-  color: white;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to bottom, #252525ff, #464646ff) !important;
+    background-attachment: fixed;
+    color: white;
     margin-bottom:30px;
 }
 
@@ -86,8 +86,15 @@ h4 { font-weight: 700; color: #fff; }
   font-weight: 600;
 }
 
-.search-bar { max-width: 350px; position: relative; margin-bottom: 20px; }
-#searchInput { padding-right: 35px; border-radius: 10px; }
+.search-bar { 
+  max-width: 350px; 
+  position: relative; 
+  margin-bottom: 20px; 
+}
+#searchInput {
+  padding-right: 35px; 
+  order-radius: 10px; 
+}
 #clearSearch {
   position: absolute;
   right: 10px;
@@ -99,7 +106,6 @@ h4 { font-weight: 700; color: #fff; }
   display: none;
 }
 
-/* === CARD PRODUK === */
 .card-produk {
   width: 210px;
   border: none;
@@ -123,11 +129,20 @@ h4 { font-weight: 700; color: #fff; }
   background: #eee;
 }
 
-.card-title { font-weight: 700; color: #222; }
-.harga2 { font-size: 17px; font-weight: bold; margin-top: 8px; }
-.stok2 { font-size: 13px; color: #444; }
+.card-title { 
+  font-weight: 700; 
+  color: #222; 
+}
+.harga2 {
+   font-size: 17px; 
+   font-weight: bold; 
+   margin-top: 8px;
+   }
+.stok2 {
+   font-size: 13px; 
+   color: #444; 
+  }
 
-/* Tombol Edit & Hapus */
 .btn-edit, .btn-hapus {
   padding: 6px 10px;
   border-radius: 8px;
@@ -135,13 +150,16 @@ h4 { font-weight: 700; color: #fff; }
   text-decoration: none;
   font-weight: 600;
 }
-.btn-edit { background: #ffb02e; }
-.btn-edit:hover { background: #e28c00; }
+.btn-edit { 
+  background: #ffb02e; 
+}
+.btn-edit:hover { 
+  background: #e28c00; 
+}
 
 .btn-hapus { background: #d9534f; }
 .btn-hapus:hover { background: #b52a22; }
 
-/* GRID PRODUK */
 #produkContainer {
   display: flex;
   flex-wrap: wrap;
@@ -221,26 +239,41 @@ const clearSearch = document.getElementById('clearSearch');
 const produkContainer = document.getElementById('produkContainer');
 let debounceTimer;
 
+// ==== FUNGSI LOAD PRODUK ====
 function loadProduk(query='') {
   fetch(`kelola_produk.php?ajax=1&search=${encodeURIComponent(query)}`)
     .then(res => res.text())
     .then(data => produkContainer.innerHTML = data);
 }
 
+// ==== PERBAIKAN SEARCH (langsung reset jika kosong) ====
 searchInput.addEventListener('input', function() {
+  const value = this.value.trim();
+
+  // Jika input kosong → langsung reset cepat
+  if (value === "") {
+    clearTimeout(debounceTimer);
+    clearSearch.style.display = "none";
+    loadProduk(""); // langsung tampilkan semua produk
+    return;
+  }
+
+  // Jika ada teks → debounce
+  clearSearch.style.display = "block";
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
-    loadProduk(this.value.trim());
-    clearSearch.style.display = this.value ? 'block' : 'none';
+    loadProduk(value);
   }, 180);
 });
 
+// Tombol clear (X)
 clearSearch.addEventListener('click', function() {
   searchInput.value = '';
   clearSearch.style.display = 'none';
-  loadProduk();
+  loadProduk('');
 });
 </script>
 
 </body>
 </html>
+// ...existing code...

@@ -7,10 +7,8 @@ if(isset($_POST['login'])){
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    /* ============================================================
-       1. LOGIN ADMIN RESMI (TIDAK MENGGUNAKAN DATABASE)
-       ============================================================ */
-    if ($username === "adminresmi" && $password === "123") {
+   
+    if ($username === "adminresmi@gmail.com" && $password === "123") {
         $_SESSION['id_user'] = 0;
         $_SESSION['nama'] = "Admin Resmi";
         $_SESSION['level'] = "adminresmi";
@@ -19,9 +17,7 @@ if(isset($_POST['login'])){
         exit();
     }
 
-    /* ============================================================
-       2. LOGIN USER BIASA (ADMIN / KASIR BERDASARKAN TABEL USER)
-       ============================================================ */
+   
     $query = mysqli_query($koneksi, "SELECT * FROM user WHERE username='$username'");
     $data = mysqli_fetch_array($query);
 

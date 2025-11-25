@@ -49,6 +49,9 @@ if (isset($_GET['ajax'])) {
   }
   exit;
 }
+
+// ==== GET KATEGORI DARI DATABASE ====
+$qKategori = mysqli_query($koneksi, "SELECT * FROM kategori");
 ?>
 
 <!doctype html>
@@ -71,7 +74,7 @@ body {
     margin-bottom:30px;
 }
 
-/* CONTENT AREA */
+
 .content {
   flex: 1;
   margin-left:260px;
@@ -81,7 +84,7 @@ body {
   align-items:center;
 }
 
-/* Jam Operasional */
+
 #jamBukaBox {
   background:#2a2a2a;
   color:#fff;
@@ -100,7 +103,7 @@ body {
   margin-top:5px; 
 }
 
-/* FILTER */
+
 .filter-menu {
   background:#2a2a2a;
   padding:10px 15px;
@@ -110,6 +113,7 @@ body {
   margin-bottom:20px;
   color:white;
   box-shadow:0 2px 6px rgba(0,0,0,0.6);
+  flex-wrap:wrap;
 }
 
 .search-bar {
@@ -123,7 +127,7 @@ body {
   background:white;
   border:none;
   color:white;
-  padding-right:35px;           /* ruang untuk X */
+  padding-right:35px;          
 }
 
 .search-bar input::placeholder {
@@ -132,19 +136,19 @@ body {
 
 #clearSearch {
   position:absolute;
-  right:12px;                    /* 🔥 nempel kanan */
-  top:50%;                       /* 🔥 di tengah */
+  right:12px;                   
+  top:50%;                       
   transform:translateY(-50%); 
   background:transparent;
   border:none;
   font-size:18px;
-  color:white;
+  color: black;
   cursor:pointer;
   display:none;
 }
 
 
-/* CARD PRODUK */
+
 .card-produk {
   width:180px;
   border:none;
@@ -163,7 +167,7 @@ body {
   object-fit:cover;
 }
 
-/* GRID */
+
 #produkContainer {
   display:flex;
   flex-wrap:wrap;
@@ -180,17 +184,16 @@ footer {
   border-top:2px solid #333;
   font-weight:600;
   color:white;
-  position: fixed;     /* 🔥 baru */
-  bottom: 0;           /* 🔥 biar nempel bawah */
-  left: 260px;         /* 🔥 biar sejajar sidebar */
-  width: calc(100% - 260px); /* 🔥 biar melebar tapi tidak nutup sidebar */
+  position: fixed;     
+  bottom: 0;           
+  left: 260px;         
+  width: calc(100% - 260px);
   z-index: 100;
 }
 
 
 </style>
 
-</style>
 </head>
 
 <body>
@@ -207,15 +210,16 @@ footer {
 
   <div class="filter-menu">
     <label><input type="radio" name="filter" value="" checked> Semua</label>
-    <label><input type="radio" name="filter" value="Dingin"> Dingin</label>
-    <label><input type="radio" name="filter" value="Panas"> Panas</label>
+    <?php while ($k = mysqli_fetch_assoc($qKategori)): ?>
+      <label><input type="radio" name="filter" value="<?= $k['nama_kategori'] ?>"> <?= $k['nama_kategori'] ?></label>
+    <?php endwhile; ?>
   </div>
 
   <div class="search-bar">
     <input type="text" id="searchInput" class="form-control" placeholder="Cari produk...">
-    <button id="clearSearch">×</button>
+  <span class="clear-btn" id="clearSearch" >&times;</span>
   </div>
-
+   
   <div id="produkContainer">
     <?php
     $qProduk = mysqli_query($koneksi, "SELECT * FROM produk WHERE is_deleted = 0 ORDER BY id_produk DESC");

@@ -68,13 +68,13 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-/* CONTENT */
+
 .content {
   margin-left: 260px;
   padding: 25px;
 }
 
-/* CARD */
+
 .card {
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.07);
@@ -84,7 +84,7 @@ body {
   transform: translateY(-3px);
 }
 
-/* TABEL */
+
 .table thead {
   background-color: #e9ecef;
 }
@@ -94,7 +94,7 @@ body {
   overflow-y: auto;
 }
 
-/* INPUT RP */
+
 .input-rp { position: relative; }
 .input-rp span {
   position: absolute;
@@ -131,7 +131,7 @@ body {
 
   <div class="row g-4">
 
-    <!-- KIRI: PRODUK -->
+    <!--PRODUK -->
     <div class="col-md-7">
       <div class="card">
         <div class="card-body">
@@ -170,7 +170,7 @@ body {
       </div>
     </div>
 
-    <!-- KANAN: KERANJANG -->
+    <!--KERANJANG -->
     <div class="col-md-5">
       <form method="post" onsubmit="return cekPembayaran();">
 
@@ -240,12 +240,12 @@ body {
   </div>
 </div>
 
-<!-- FOOTER DASHBOARD -->
+
 <div class="footer">
   © <?= date('Y') ?> <strong>Kasir Wedangan</strong>
 </div>
 
-<!-- JavaScript -->
+
 <script>
 const cartBody = document.querySelector('#tabelCart tbody');
 const totalInput = document.getElementById('total_harga');

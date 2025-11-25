@@ -19,11 +19,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-
-    /* Background gelap dengan efek buram */
-    background:
-        linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-        url('admin/kk.jpg') no-repeat center center fixed;
+    background:linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),url('admin/kk.jpg') no-repeat center center fixed;
     background-size: cover;
     color: #fff;
     text-align: center;

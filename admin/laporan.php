@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['level']) || $_SESSION['level'] != 'admin') {
-  header("Location: ../welcome.php");
+  header("Location: ../index.php");
   exit;
 }
 
@@ -57,7 +57,7 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-/* ==== CONTAINER LEBAR FULL ==== */
+
 .main-wrapper {
     margin-left:260px;
     padding:20px;
@@ -65,9 +65,8 @@ body {
     width: calc(100% - 260px);
 }
 
-/* ===== FOOTER ===== */
+
 .footer-dashboard {
- 
   width: calc(100% - 260px);
   margin-left: 260px;
   background: #262626;
@@ -95,7 +94,7 @@ body {
   }
 }
 
-/* ================= SEARCH BAR ================= */
+
 .search-wrapper {
     position: relative;
     width: 280px;
@@ -139,20 +138,14 @@ body {
   <form class="no-print mb-4" method="GET" id="filterForm">
       <div class="d-flex justify-content-center">
           <div class="row g-3 align-items-end w-100">
-
-              <!-- "Dari Tanggal" di kanan -->
               <div class="col-md-4 text-end">
                   <label class="form-label fw-semibold">Dari Tanggal</label>
                   <input type="date" name="from" class="form-control" value="<?= $from ?>" id="fromDate">
               </div>
-
-              <!-- "Sampai Tanggal" di kiri -->
               <div class="col-md-4 text-start">
                   <label class="form-label fw-semibold">Sampai Tanggal</label>
                   <input type="date" name="to" class="form-control" value="<?= $to ?>" id="toDate">
               </div>
-
-              <!-- Tombol Cetak Laporan -->
               <div class="col-md-4 text-end">
                   <button type="button" class="btn btn-success w-100" onclick="printReport()">
                       🖨 Cetak Laporan
@@ -162,9 +155,7 @@ body {
           </div>
       </div>
   </form>
-  <!-- ============= END FILTER ============= -->
-
-  <!-- ================== CETAK AREA ================== -->
+ 
   <div id="print-area" class="bg-white p-4 rounded shadow-sm">
 
     <div class="text-center mb-4 border-bottom pb-2">
@@ -180,7 +171,7 @@ body {
       </small>
     </div>
 
-    <!-- 🔍 SEARCH BAR -->
+    <!--  SEARCH BAR -->
     <div class="no-print mb-3 d-flex justify-content-end">
         <div class="search-wrapper">
             <input type="text" id="search" class="search-input" placeholder="Cari transaksi...">
@@ -188,7 +179,7 @@ body {
         </div>
     </div>
 
-    <!-- Ringkasan -->
+    
     <div class="alert alert-info py-2 mb-2">
       <strong>Total Transaksi:</strong> <?= number_format($dataTotal['total_transaksi'],0,',','.') ?> transaksi
     </div>
@@ -197,7 +188,7 @@ body {
       <strong>Total Pendapatan:</strong> Rp <?= number_format($dataTotal['total_pendapatan'],0,',','.') ?>
     </div>
 
-    <!-- TABEL -->
+    
     <table class="table table-bordered table-striped mt-3 w-100" id="transaksiTable">
       <thead class="table-secondary text-center">
         <tr>
@@ -234,13 +225,13 @@ body {
   </div>
 </div>
 
-<!-- FOOTER -->
+
 <div class="footer-dashboard">
   © <?= date('Y') ?> Kasir Wedangan Nusantara
 </div>
 
 <script>
-// ========== AUTO SUBMIT FORM ON DATE CHANGE ========== 
+
 document.getElementById('fromDate').addEventListener('change', function() {
     document.getElementById('filterForm').submit();
 });
@@ -249,7 +240,7 @@ document.getElementById('toDate').addEventListener('change', function() {
     document.getElementById('filterForm').submit();
 });
 
-// ========== SEARCH BAR FUNCTION ========== 
+
 const input = document.getElementById("search");
 const clearBtn = document.getElementById("clearBtn");
 const table = document.getElementById("transaksiTable").getElementsByTagName("tbody")[0];

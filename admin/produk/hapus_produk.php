@@ -7,9 +7,6 @@ if (!isset($_GET['id'])) {
 }
 
 $id = $_GET['id'];
-
-
-// Hapus produk jika aman
 $hapus = mysqli_query($koneksi, "UPDATE produk SET is_deleted = 1 WHERE id_produk = '$id';
 ");
 

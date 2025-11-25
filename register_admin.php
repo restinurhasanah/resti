@@ -8,7 +8,7 @@ if (isset($_POST['register'])) {
     $username = mysqli_real_escape_string($koneksi, $_POST['username']);
     $password_plain = mysqli_real_escape_string($koneksi, $_POST['password']);
 
-    // 🔍 Cek apakah username atau password sudah digunakan
+    // Cek apakah username atau password sudah digunakan
     $cek = mysqli_query($koneksi, "SELECT * FROM user WHERE username='$username' OR password='$password_plain'");
     if (mysqli_num_rows($cek) > 0) {
         $error = "Username atau Password sudah digunakan, silakan ganti!";
